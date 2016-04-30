@@ -33,7 +33,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
-import com.malin.decode.bitmap.bean.ImageSize;
+import com.malin.decode.bitmap.bean.BitmapInfo;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -337,8 +337,8 @@ public class ImageUtils {
      * @param resId
      * @return
      */
-    public static ImageSize getLocalBitmapSizeFromResFolder(Context context, int resId) {
-        ImageSize imageSize = new ImageSize();
+    public static BitmapInfo getLocalBitmapSizeFromResFolder(Context context, int resId) {
+        BitmapInfo bitmapInfo = new BitmapInfo();
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
         try {
@@ -351,9 +351,12 @@ public class ImageUtils {
             e.printStackTrace();
             return null;
         }
-        imageSize.width = opts.outHeight;
-        imageSize.height = opts.outWidth;
-        return imageSize;
+        bitmapInfo.width = opts.outHeight;
+        bitmapInfo.height = opts.outWidth;
+        bitmapInfo.outMimeType =opts.outMimeType;
+        bitmapInfo.scale = 1;
+
+        return bitmapInfo;
     }
 
 
@@ -416,13 +419,35 @@ public class ImageUtils {
      * @return
      */
     public static int getDrawableBitmapSize(Context context,int resource,int drawableDensityDpi){
-        ImageSize imageSize = ImageUtils.getInstance().getLocalBitmapSizeFromResFolder(context, resource);
-        int w = imageSize.width;
-        int h = imageSize.height;
+        BitmapInfo bitmapInfo = ImageUtils.getInstance().getLocalBitmapSizeFromResFolder(context, resource);
+        int w = bitmapInfo.width;
+        int h = bitmapInfo.height;
         int targetDensityDpi = DeviceInfo.mDensityDpi;
         float scale = (targetDensityDpi * 1.0f)/drawableDensityDpi;
         int w_scale = (int) (w * scale + 0.5f);
         int h_scale = (int) (h * scale + 0.5f);
         return w_scale*h_scale*4;
+    }
+
+    /**
+     * 获取mipmap文件夹下图片的大小
+     * @param resource:图片的id
+     * @param drawableDensityDpi：图片所在目录文件对应的DensityDpi
+     * @return
+     */
+    public static BitmapInfo getDrawableBitmapInfo(Context context,int resource,int drawableDensityDpi){
+        BitmapInfo bitmapInfo = ImageUtils.getInstance().getLocalBitmapSizeFromResFolder(context, resource);
+        int w = bitmapInfo.width;
+        int h = bitmapInfo.height;
+        String outMimeType = bitmapInfo.outMimeType;
+        int targetDensityDpi = DeviceInfo.mDensityDpi;
+        float scale = (targetDensityDpi * 1.0f)/drawableDensityDpi;
+        int w_scale = (int) (w * scale + 0.5f);
+        int h_scale = (int) (h * scale + 0.5f);
+        bitmapInfo.width = w_scale;
+        bitmapInfo.height = h_scale;
+        bitmapInfo.outMimeType = outMimeType;
+        bitmapInfo.scale = scale;
+        return bitmapInfo;
     }
 }

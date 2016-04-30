@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:background="@android:color/transparent"
-    tools:context=".bitmap.activity.MainActivity">
+    tools:context=".activity.MainActivity">
 
 
     <RelativeLayout
@@ -29,7 +29,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-
             />
     </RelativeLayout>
 
@@ -45,7 +44,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerInParent="true"
-            android:layout_gravity="center_horizontal" />
+             />
 
         <ProgressBar
             android:id="@+id/pb_loading_two"
@@ -67,7 +66,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerInParent="true"
-            android:layout_gravity="center_horizontal" />
+             />
 
         <ProgressBar
             android:id="@+id/pb_loading_three"
@@ -89,7 +88,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerInParent="true"
-            android:layout_gravity="center_horizontal" />
+            />
 
         <ProgressBar
             android:id="@+id/pb_loading_four"
@@ -99,5 +98,25 @@
             android:layout_centerInParent="true" />
     </RelativeLayout>
 
+
+    <RelativeLayout
+        android:id="@+id/rl_five"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_light">
+
+        <ImageView
+            android:id="@+id/iv_img_five"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true" />
+
+        <ProgressBar
+            android:id="@+id/pb_loading_five"
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 
 </LinearLayout>

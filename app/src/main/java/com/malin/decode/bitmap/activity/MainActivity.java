@@ -1,6 +1,7 @@
 package com.malin.decode.bitmap.activity;
 
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.malin.decode.bitmap.R;
+import com.malin.decode.bitmap.bean.BitmapInfo;
 import com.malin.decode.bitmap.util.DeviceInfo;
 import com.malin.decode.bitmap.util.DimensUtils;
 import com.malin.decode.bitmap.util.ImageUtils;
@@ -32,11 +34,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mImageViewTwo;
     private ImageView mImageViewThree;
     private ImageView mImageViewDpi;
+    private ImageView mImageViewFive;
 
     private ProgressBar mProgressBar;
     private ProgressBar mProgressBarTwo;
     private ProgressBar mProgressBarThree;
     private ProgressBar mProgressBarFour;
+    private ProgressBar mProgressBarFive;
 
     private Bitmap mBitmap_ARGB_8888;
     private Bitmap mBitmap_RGB_565;
@@ -44,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
     private Bitmap mHdiBitmap;
 
+    private Bitmap mHeartBitmap;
+
     private RelativeLayout mRelativeLayoutOne;
     private RelativeLayout mRelativeLayoutTwo;
     private RelativeLayout mRelativeLayoutThree;
     private RelativeLayout mRelativeLayoutFour;
-
+    private RelativeLayout mRelativeLayoutFive;
 
 
     //不同目录对应的 DensityDpi
@@ -91,15 +97,18 @@ public class MainActivity extends AppCompatActivity {
         mProgressBarTwo = (ProgressBar) findViewById(R.id.pb_loading_two);
         mProgressBarThree = (ProgressBar) findViewById(R.id.pb_loading_three);
         mProgressBarFour = (ProgressBar) findViewById(R.id.pb_loading_four);
+        mProgressBarFive = (ProgressBar) findViewById(R.id.pb_loading_five);
 
         mImageViewTwo = (ImageView) findViewById(R.id.iv_img_two);
         mImageViewThree = (ImageView) findViewById(R.id.iv_img_three);
         mImageViewDpi = (ImageView) findViewById(R.id.iv_img_dpi);
+        mImageViewFive = (ImageView) findViewById(R.id.iv_img_five);
 
         mRelativeLayoutOne = (RelativeLayout) findViewById(R.id.rl_one);
         mRelativeLayoutTwo = (RelativeLayout) findViewById(R.id.rl_two);
         mRelativeLayoutThree = (RelativeLayout) findViewById(R.id.rl_three);
         mRelativeLayoutFour = (RelativeLayout) findViewById(R.id.rl_four);
+        mRelativeLayoutFive = (RelativeLayout) findViewById(R.id.rl_five);
     }
 
 
@@ -114,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             Logger.d("DeviceInfo.mDensity:" + DeviceInfo.mDensity);
             Logger.d("height:" + height);
             Logger.d("width:" + width);
+
             mBitmap_ARGB_8888 = ImageUtils.getInstance().getImageBitmapFromAssetsFolderThroughImagePathName(
                     getApplicationContext(),
                     PATH,
@@ -140,12 +150,32 @@ public class MainActivity extends AppCompatActivity {
                     Bitmap.Config.ALPHA_8
             );
 
+            mHeartBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.heart);
+
+            int hearBitmapSize = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.heart, DENSITY_XXXHDPI);
+            int heartSize = ImageUtils.getBitmapSize(mHeartBitmap);
+            BitmapInfo bitmapInfo = ImageUtils.getLocalBitmapSizeFromResFolder(getApplicationContext(), R.mipmap.heart);
+            if (hearBitmapSize == heartSize) {
+                Logger.d("heart is ok");
+            }
+            Logger.d("heartSize:" + heartSize);
+            Logger.d("hearBitmapSize:" + hearBitmapSize);
+            Logger.d("原始width:" + bitmapInfo.width);//w:38
+            Logger.d("原始height:" + bitmapInfo.height);//h:48
+            Logger.d("原始outMimeType:" + bitmapInfo.outMimeType);
+
+            BitmapInfo info = ImageUtils.getDrawableBitmapInfo(getApplicationContext(), R.mipmap.heart, DENSITY_XXXHDPI);
+            Logger.d("最后scale:" + info.scale);
+            Logger.d("最后with:" + info.width);
+            Logger.d("最后height:" + info.height);
+            Logger.d("最后outMimeType:" + info.outMimeType);
             getMdpiBitmap();
             getHdpiBitmap();
             getXHdpiBitmap();
             getXXHdpiBitmap();
             getXXXHdpiBitmap();
             getBigBitmapFromHdpi();
+
 
             Logger.d("bitmap_ARGB_8888 size:" + ImageUtils.getBitmapSize(mBitmap_ARGB_8888));
             Logger.d("bitmap_RGB_565 size:" + ImageUtils.getBitmapSize(mBitmap_RGB_565));
@@ -158,16 +188,19 @@ public class MainActivity extends AppCompatActivity {
                     mProgressBarTwo.setVisibility(View.GONE);
                     mProgressBarThree.setVisibility(View.GONE);
                     mProgressBarFour.setVisibility(View.GONE);
+                    mProgressBarFive.setVisibility(View.GONE);
 
                     mRelativeLayoutOne.setBackgroundColor(getResources().getColor(R.color.colorTransparent));
                     mRelativeLayoutTwo.setBackgroundColor(getResources().getColor(R.color.colorTransparent));
                     mRelativeLayoutThree.setBackgroundColor(getResources().getColor(R.color.colorTransparent));
                     mRelativeLayoutFour.setBackgroundColor(getResources().getColor(R.color.colorTransparent));
+                    mRelativeLayoutFive.setBackgroundColor(getResources().getColor(R.color.colorTransparent));
 
                     mImageView.setImageBitmap(mBitmap_ARGB_8888);
                     mImageViewTwo.setImageBitmap(mBitmap_RGB_565);
                     mImageViewThree.setImageBitmap(mBitmap_ALPHA_8);
                     mImageViewDpi.setImageBitmap(mHdiBitmap);
+                    loadImageMatrix();
                 }
             });
 
@@ -178,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * mipmap-mdpi
-     * <p/>
+     * <p>
      * density 1
      * densityDpi 160
      */
@@ -206,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * mipmap-hdpi
-     * <p/>
+     * <p>
      * density 1.5
      * densityDpi 240
      */
@@ -234,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * mipmap-xhdpi 2
-     * <p/>
+     * <p>
      * density 320
      */
     private void getXHdpiBitmap() {
@@ -260,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * mipmap-xxhdpi 3
-     * <p/>
+     * <p>
      * density 480
      */
     private void getXXHdpiBitmap() {
@@ -289,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * mipmap-xxxhdpi 4
-     * <p/>
+     * <p>
      * density 640
      */
     private void getXXXHdpiBitmap() {
@@ -341,6 +374,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    private void loadImageMatrix() {
+        Matrix matrix = new Matrix();
+        matrix.postScale(5, 5, 0, 0);
+        mImageViewFive.setImageMatrix(matrix);
+        mImageViewFive.setScaleType(ImageView.ScaleType.MATRIX);
+        mImageViewFive.setImageBitmap(mHeartBitmap);
+    }
 
     /**
      * 实现字符串的倒序
