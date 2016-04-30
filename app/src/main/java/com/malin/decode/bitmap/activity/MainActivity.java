@@ -9,14 +9,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.malin.decode.R;
+import com.malin.decode.bitmap.R;
 import com.malin.decode.bitmap.util.DeviceInfo;
 import com.malin.decode.bitmap.util.DimensUtils;
 import com.malin.decode.bitmap.util.ImageUtils;
 import com.orhanobut.logger.Logger;
 
 /**
- * 测试手机为Nexus 6p DensityDpi:560
+ * 类描述:图片处理类
+ * 创建人:malin.myemail@gmail.com
+ * 创建时间:16-04-29.
+ * 备注：测试手机为Nexus 6p DensityDpi:560
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +49,15 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout mRelativeLayoutThree;
     private RelativeLayout mRelativeLayoutFour;
 
+
+
+    //不同目录对应的 DensityDpi
+    private static final int DENSITY_MDPI = 160;//mdpi
+    private static final int DENSITY_HDPI = 240;//hdpi
+    private static final int DENSITY_XHDPI = 320;//xhdpi
+    private static final int DENSITY_XXHDPI = 480;//xxhdpi
+    private static final int DENSITY_XXXHDPI = 640;//xxxhdpi
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         Logger.init(TAG);
         initView();
         initData();
-
+        Logger.d("mDensity:" + DeviceInfo.mDensity);
+        Logger.d("mDensityDpi:" + DeviceInfo.mDensityDpi);
         int w = (int) (640 * ((560 * 1.0f) / 240) + 0.5f);
         int h = (int) (960 * ((560 * 1.0f) / 240) + 0.5f);
         Logger.d("w:" + w);
@@ -127,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     Bitmap.Config.ALPHA_8
             );
 
+            getMdpiBitmap();
             getHdpiBitmap();
             getXHdpiBitmap();
             getXXHdpiBitmap();
@@ -163,6 +177,34 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
+     * mipmap-mdpi
+     * <p/>
+     * density 1
+     * densityDpi 160
+     */
+    private void getMdpiBitmap() {
+        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.mdpi_girl);
+
+        //nexus 6p
+        // R.mipmap.mdpi_girl
+        // 960*640
+        int w_hdpi = (int) (640 * ((560 * 1.0f) / 160) + 0.5f);
+        int h_hdpi = (int) (960 * ((560 * 1.0f) / 160) + 0.5f);
+        int hdpi_size = w_hdpi * h_hdpi * 4;
+        Logger.d("mdpi_size:" + hdpi_size);
+
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.mdpi_girl, DENSITY_MDPI);
+
+        Logger.d("mHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
+        Logger.d("size:" + size);
+
+
+        if (size == ImageUtils.getBitmapSize(mHdiBitmap)) {
+            Logger.d("mdpi is ok");
+        }
+    }
+
+    /**
      * mipmap-hdpi
      * <p/>
      * density 1.5
@@ -170,17 +212,22 @@ public class MainActivity extends AppCompatActivity {
      */
     private void getHdpiBitmap() {
         mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.hdpi_girl);
+
+        //nexus 6p
+        // R.mipmap.hdpi_girl
+        // 960*640
         int w_hdpi = (int) (640 * ((560 * 1.0f) / 240) + 0.5f);
         int h_hdpi = (int) (960 * ((560 * 1.0f) / 240) + 0.5f);
         int hdpi_size = w_hdpi * h_hdpi * 4;
-
-        Logger.d("w_hdpi" + w_hdpi);
-        Logger.d("h_hdpi_" + h_hdpi);
         Logger.d("hdpi_size:" + hdpi_size);
 
-        Logger.d("mHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.hdpi_girl, DENSITY_HDPI);
 
-        if (hdpi_size == ImageUtils.getBitmapSize(mHdiBitmap)) {
+        Logger.d("mHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
+        Logger.d("size:" + size);
+
+
+        if (size == ImageUtils.getBitmapSize(mHdiBitmap)) {
             Logger.d("hdpi is ok");
         }
     }
@@ -191,18 +238,22 @@ public class MainActivity extends AppCompatActivity {
      * density 320
      */
     private void getXHdpiBitmap() {
+
+        //nexus 6p
+        // R.mipmap.hdpi_girl
+        // 960*640
         int w_xhdpi = (int) (640 * ((560 * 1.0f) / 320) + 0.5f);
         int h_xhdpi = (int) (960 * ((560 * 1.0f) / 320) + 0.5f);
         int xhdpi_size = w_xhdpi * h_xhdpi * 4;
+        Logger.d("xhdpi_size:" + xhdpi_size);
 
-        Logger.d("w_hdpi:" + w_xhdpi);
-        Logger.d("h_hdpi:" + h_xhdpi);
-        Logger.d("hdpi_size:" + xhdpi_size);
+
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.xhdpi_girl, DENSITY_XHDPI);
 
         mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.xhdpi_girl);
         Logger.d("mxHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
-
-        if (xhdpi_size == ImageUtils.getBitmapSize(mHdiBitmap)) {
+        Logger.d("size:" + size);
+        if (size == ImageUtils.getBitmapSize(mHdiBitmap)) {
             Logger.d("xhdpi is ok");
         }
     }
@@ -213,18 +264,25 @@ public class MainActivity extends AppCompatActivity {
      * density 480
      */
     private void getXXHdpiBitmap() {
+
+        //nexus 6p
+        // R.mipmap.hdpi_girl
+        // 960*640
         int w_xxhdpi = (int) (640 * ((560 * 1.0f) / 480) + 0.5f);
         int h_xxhdpi = (int) (960 * ((560 * 1.0f) / 480) + 0.5f);
         int xxhdpi_size = w_xxhdpi * h_xxhdpi * 4;
 
         Logger.d("w_hdpi:" + w_xxhdpi);
         Logger.d("h_hdpi:" + h_xxhdpi);
-        Logger.d("hdpi_size:" + xxhdpi_size);
+        Logger.d("xxhdpi_size:" + xxhdpi_size);
+
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.xxhdpi_girl, DENSITY_XXHDPI);
 
         mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.xxhdpi_girl);
         Logger.d("mxxHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
+        Logger.d("size:" + size);
 
-        if (xxhdpi_size == ImageUtils.getBitmapSize(mHdiBitmap)) {
+        if (size == ImageUtils.getBitmapSize(mHdiBitmap)) {
             Logger.d("xxhdpi is ok");
         }
     }
@@ -235,6 +293,10 @@ public class MainActivity extends AppCompatActivity {
      * density 640
      */
     private void getXXXHdpiBitmap() {
+
+        //nexus 6p
+        // R.mipmap.hdpi_girl
+        // 960*640
         int w_xxxhdpi = (int) (640 * ((560 * 1.0f) / 640) + 0.5f);
         int h_xxxhdpi = (int) (960 * ((560 * 1.0f) / 640) + 0.5f);
         int xxxhdpi_size = w_xxxhdpi * h_xxxhdpi * 4;
@@ -243,21 +305,42 @@ public class MainActivity extends AppCompatActivity {
         Logger.d("h_xxxhdpi_" + h_xxxhdpi);
         Logger.d("xxxhdpi_size:" + xxxhdpi_size);
 
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.xxxhdpi_girl, DENSITY_XXXHDPI);
 
         mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.xxxhdpi_girl);
         Logger.d("mxxxHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
-
-        if (xxxhdpi_size == ImageUtils.getBitmapSize(mHdiBitmap)) {
+        Logger.d("xxxhdpi_size:" + size);
+        if (size == ImageUtils.getBitmapSize(mHdiBitmap)) {
             Logger.d("xxxhdpi is ok");
+
         }
     }
 
     private void getBigBitmapFromHdpi() {
         int width = DimensUtils.dipToPx(200);
         int height = DimensUtils.dipToPx(200);
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.bigmap, width, height, Bitmap.Config.RGB_565);
+        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.bigmap, width, height, Bitmap.Config.ARGB_8888);
         Logger.d("BigBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.bigmap, DENSITY_XXXHDPI);
+        Logger.d("size:" + size);
+
+
+        //不压缩，直接读取，OOM
+        Bitmap oBitmap = null;
+
+//      oBitmap  = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.bigmap);
+
+
+        if (oBitmap == null) {
+            Logger.d("oBitmap==null");
+        } else {
+            Logger.d("oBitmap!=null");
+        }
+        if (size == ImageUtils.getBitmapSize(oBitmap)) {
+            Logger.d("big image is ok");
+        }
     }
+
 
     /**
      * 实现字符串的倒序

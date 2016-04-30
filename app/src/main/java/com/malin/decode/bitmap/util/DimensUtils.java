@@ -1,7 +1,9 @@
 package com.malin.decode.bitmap.util;
 
 /**
- * Created by malin on 16-4-29.
+ * 类描述:尺寸转换
+ * 创建人:malin.myemail@gmail.com
+ * 创建时间:16-04-30.
  */
 public class DimensUtils {
 

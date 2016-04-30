@@ -33,6 +33,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
+import com.malin.decode.bitmap.bean.ImageSize;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -254,7 +255,17 @@ public class ImageUtils {
      */
 
     public Bitmap getLocalBitmapFromResFolder(Context context, int resId) {
-        return BitmapFactory.decodeResource(context.getResources(), resId);
+
+        Bitmap bitmap = null;
+        try {
+             bitmap = BitmapFactory.decodeResource(context.getResources(), resId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }catch (OutOfMemoryError outOfMemoryError){
+            outOfMemoryError.printStackTrace();
+            System.gc();
+        }
+        return bitmap;
     }
 
 
@@ -321,6 +332,32 @@ public class ImageUtils {
     }
 
     /**
+     * 解析mipmap文件夹中的图片
+     * @param context
+     * @param resId
+     * @return
+     */
+    public static ImageSize getLocalBitmapSizeFromResFolder(Context context, int resId) {
+        ImageSize imageSize = new ImageSize();
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inJustDecodeBounds = true;
+        try {
+            BitmapFactory.decodeResource(context.getResources(), resId, opts);
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            System.gc();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        imageSize.width = opts.outHeight;
+        imageSize.height = opts.outWidth;
+        return imageSize;
+    }
+
+
+    /**
      * 获取Bitmap大小
      *
      * @param bitmap
@@ -332,8 +369,8 @@ public class ImageUtils {
         }
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
-        Logger.d("Last Width:" + w);
-        Logger.d("Last Height:" + h);
+//        Logger.d("Last Width:" + w);
+//        Logger.d("Last Height:" + h);
 
         return bitmap.getRowBytes() * bitmap.getHeight(); // earlier version
     }
@@ -369,5 +406,23 @@ public class ImageUtils {
             return bitmap.getByteCount();
         }
         return bitmap.getRowBytes() * bitmap.getHeight(); // earlier version
+    }
+
+
+    /**
+     * 获取mipmap文件夹下图片的大小
+     * @param resource:图片的id
+     * @param drawableDensityDpi：图片所在目录文件对应的DensityDpi
+     * @return
+     */
+    public static int getDrawableBitmapSize(Context context,int resource,int drawableDensityDpi){
+        ImageSize imageSize = ImageUtils.getInstance().getLocalBitmapSizeFromResFolder(context, resource);
+        int w = imageSize.width;
+        int h = imageSize.height;
+        int targetDensityDpi = DeviceInfo.mDensityDpi;
+        float scale = (targetDensityDpi * 1.0f)/drawableDensityDpi;
+        int w_scale = (int) (w * scale + 0.5f);
+        int h_scale = (int) (h * scale + 0.5f);
+        return w_scale*h_scale*4;
     }
 }
