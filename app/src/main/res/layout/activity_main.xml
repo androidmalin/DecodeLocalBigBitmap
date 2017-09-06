@@ -9,6 +9,11 @@
     tools:context=".activity.MainActivity">
 
 
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <RelativeLayout
         android:id="@+id/rl_one"
         android:layout_width="wrap_content"
@@ -28,8 +33,7 @@
             style="@style/Base.Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            />
+            android:layout_centerInParent="true" />
     </RelativeLayout>
 
 
@@ -43,8 +47,7 @@
             android:id="@+id/iv_img_two"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_centerInParent="true"
-             />
+            android:layout_centerInParent="true" />
 
         <ProgressBar
             android:id="@+id/pb_loading_two"
@@ -65,8 +68,7 @@
             android:id="@+id/iv_img_three"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_centerInParent="true"
-             />
+            android:layout_centerInParent="true" />
 
         <ProgressBar
             android:id="@+id/pb_loading_three"
@@ -87,8 +89,7 @@
             android:id="@+id/iv_img_dpi"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_centerInParent="true"
-            />
+            android:layout_centerInParent="true" />
 
         <ProgressBar
             android:id="@+id/pb_loading_four"

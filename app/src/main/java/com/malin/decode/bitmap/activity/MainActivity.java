@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.malin.decode.bitmap.R;
 import com.malin.decode.bitmap.bean.BitmapInfo;
@@ -64,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int DENSITY_XXHDPI = 480;//xxhdpi
     private static final int DENSITY_XXXHDPI = 640;//xxxhdpi
 
+
+    private TextView mTvResult;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,23 +96,25 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initView() {
-        mImageView = (ImageView) findViewById(R.id.iv_img);
-        mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
-        mProgressBarTwo = (ProgressBar) findViewById(R.id.pb_loading_two);
-        mProgressBarThree = (ProgressBar) findViewById(R.id.pb_loading_three);
-        mProgressBarFour = (ProgressBar) findViewById(R.id.pb_loading_four);
-        mProgressBarFive = (ProgressBar) findViewById(R.id.pb_loading_five);
 
-        mImageViewTwo = (ImageView) findViewById(R.id.iv_img_two);
-        mImageViewThree = (ImageView) findViewById(R.id.iv_img_three);
-        mImageViewDpi = (ImageView) findViewById(R.id.iv_img_dpi);
-        mImageViewFive = (ImageView) findViewById(R.id.iv_img_five);
+        mTvResult = findViewById(R.id.tv_result);
+        mImageView = findViewById(R.id.iv_img);
+        mProgressBar = findViewById(R.id.pb_loading);
+        mProgressBarTwo = findViewById(R.id.pb_loading_two);
+        mProgressBarThree = findViewById(R.id.pb_loading_three);
+        mProgressBarFour = findViewById(R.id.pb_loading_four);
+        mProgressBarFive = findViewById(R.id.pb_loading_five);
 
-        mRelativeLayoutOne = (RelativeLayout) findViewById(R.id.rl_one);
-        mRelativeLayoutTwo = (RelativeLayout) findViewById(R.id.rl_two);
-        mRelativeLayoutThree = (RelativeLayout) findViewById(R.id.rl_three);
-        mRelativeLayoutFour = (RelativeLayout) findViewById(R.id.rl_four);
-        mRelativeLayoutFive = (RelativeLayout) findViewById(R.id.rl_five);
+        mImageViewTwo = findViewById(R.id.iv_img_two);
+        mImageViewThree = findViewById(R.id.iv_img_three);
+        mImageViewDpi = findViewById(R.id.iv_img_dpi);
+        mImageViewFive = findViewById(R.id.iv_img_five);
+
+        mRelativeLayoutOne = findViewById(R.id.rl_one);
+        mRelativeLayoutTwo = findViewById(R.id.rl_two);
+        mRelativeLayoutThree = findViewById(R.id.rl_three);
+        mRelativeLayoutFour = findViewById(R.id.rl_four);
+        mRelativeLayoutFive = findViewById(R.id.rl_five);
     }
 
 
@@ -150,11 +156,11 @@ public class MainActivity extends AppCompatActivity {
                     Bitmap.Config.ALPHA_8
             );
 
-            mHeartBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.heart);
+            mHeartBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.heart);
 
-            int hearBitmapSize = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.heart, DENSITY_XXXHDPI);
+            int hearBitmapSize = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.heart, DENSITY_XXXHDPI);
             int heartSize = ImageUtils.getBitmapSize(mHeartBitmap);
-            BitmapInfo bitmapInfo = ImageUtils.getLocalBitmapSizeFromResFolder(getApplicationContext(), R.mipmap.heart);
+            BitmapInfo bitmapInfo = ImageUtils.getLocalBitmapSizeFromResFolder(getApplicationContext(), R.drawable.heart);
             if (hearBitmapSize == heartSize) {
                 Logger.d("heart is ok");
             }
@@ -164,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
             Logger.d("原始height:" + bitmapInfo.height);//h:48
             Logger.d("原始outMimeType:" + bitmapInfo.outMimeType);
 
-            BitmapInfo info = ImageUtils.getDrawableBitmapInfo(getApplicationContext(), R.mipmap.heart, DENSITY_XXXHDPI);
+            BitmapInfo info = ImageUtils.getDrawableBitmapInfo(getApplicationContext(), R.drawable.heart, DENSITY_XXXHDPI);
             Logger.d("最后scale:" + info.scale);
             Logger.d("最后with:" + info.width);
             Logger.d("最后height:" + info.height);
@@ -176,6 +182,13 @@ public class MainActivity extends AppCompatActivity {
             getXXXHdpiBitmap();
             getBigBitmapFromHdpi();
 
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mTvResult.setText(mBuilder);
+                }
+            });
 
             Logger.d("bitmap_ARGB_8888 size:" + ImageUtils.getBitmapSize(mBitmap_ARGB_8888));
             Logger.d("bitmap_RGB_565 size:" + ImageUtils.getBitmapSize(mBitmap_RGB_565));
@@ -209,6 +222,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private StringBuilder mBuilder = new StringBuilder("同一张图片在不同目录下占用的内存" + "\n");
+
     /**
      * mipmap-mdpi
      * <p>
@@ -216,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
      * densityDpi 160
      */
     private void getMdpiBitmap() {
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.mdpi_girl);
+        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.mdpi_girl);
 
         //nexus 6p
         // R.mipmap.mdpi_girl
@@ -226,13 +241,17 @@ public class MainActivity extends AppCompatActivity {
         int hdpi_size = w_hdpi * h_hdpi * 4;
         Logger.d("mdpi_size:" + hdpi_size);
 
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.mdpi_girl, DENSITY_MDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.mdpi_girl, DENSITY_MDPI);
 
-        Logger.d("mHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
+        int bitmapSize = ImageUtils.getBitmapSize(mHdiBitmap);
+        Logger.d("mHdiBitmap:" + bitmapSize);
         Logger.d("size:" + size);
 
+        mBuilder.append("mipmap-mdpi:" + getMB(bitmapSize));
+        mBuilder.append("\n");
 
-        if (size == ImageUtils.getBitmapSize(mHdiBitmap)) {
+
+        if (size == bitmapSize) {
             Logger.d("mdpi is ok");
         }
     }
@@ -244,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
      * densityDpi 240
      */
     private void getHdpiBitmap() {
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.hdpi_girl);
+        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.hdpi_girl);
 
         //nexus 6p
         // R.mipmap.hdpi_girl
@@ -254,13 +273,16 @@ public class MainActivity extends AppCompatActivity {
         int hdpi_size = w_hdpi * h_hdpi * 4;
         Logger.d("hdpi_size:" + hdpi_size);
 
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.hdpi_girl, DENSITY_HDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.hdpi_girl, DENSITY_HDPI);
 
-        Logger.d("mHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
+
+        int bitmapSize = ImageUtils.getBitmapSize(mHdiBitmap);
+        Logger.d("mHdiBitmap:" + bitmapSize);
         Logger.d("size:" + size);
+        mBuilder.append("mipmap-hdpi:" + getMB(bitmapSize));
+        mBuilder.append("\n");
 
-
-        if (size == ImageUtils.getBitmapSize(mHdiBitmap)) {
+        if (size == bitmapSize) {
             Logger.d("hdpi is ok");
         }
     }
@@ -281,12 +303,20 @@ public class MainActivity extends AppCompatActivity {
         Logger.d("xhdpi_size:" + xhdpi_size);
 
 
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.xhdpi_girl, DENSITY_XHDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xhdpi_girl, DENSITY_XHDPI);
 
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.xhdpi_girl);
-        Logger.d("mxHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
+        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xhdpi_girl);
+
+
+        int bitmapSize = ImageUtils.getBitmapSize(mHdiBitmap);
+
+        mBuilder.append("mipmap-xhdpi:" + getMB(bitmapSize));
+        mBuilder.append("\n");
+
+
+        Logger.d("mxHdiBitmap:" + bitmapSize);
         Logger.d("size:" + size);
-        if (size == ImageUtils.getBitmapSize(mHdiBitmap)) {
+        if (size == bitmapSize) {
             Logger.d("xhdpi is ok");
         }
     }
@@ -309,13 +339,20 @@ public class MainActivity extends AppCompatActivity {
         Logger.d("h_hdpi:" + h_xxhdpi);
         Logger.d("xxhdpi_size:" + xxhdpi_size);
 
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.xxhdpi_girl, DENSITY_XXHDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xxhdpi_girl, DENSITY_XXHDPI);
 
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.xxhdpi_girl);
-        Logger.d("mxxHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
+        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xxhdpi_girl);
+
+
+        int bitmapSize = ImageUtils.getBitmapSize(mHdiBitmap);
+
+        mBuilder.append("mipmap-xxhdpi:" + getMB(bitmapSize));
+        mBuilder.append("\n");
+
+        Logger.d("mxxHdiBitmap:" + bitmapSize);
         Logger.d("size:" + size);
 
-        if (size == ImageUtils.getBitmapSize(mHdiBitmap)) {
+        if (size == bitmapSize) {
             Logger.d("xxhdpi is ok");
         }
     }
@@ -338,12 +375,20 @@ public class MainActivity extends AppCompatActivity {
         Logger.d("h_xxxhdpi_" + h_xxxhdpi);
         Logger.d("xxxhdpi_size:" + xxxhdpi_size);
 
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.xxxhdpi_girl, DENSITY_XXXHDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xxxhdpi_girl, DENSITY_XXXHDPI);
 
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.xxxhdpi_girl);
-        Logger.d("mxxxHdiBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
+        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xxxhdpi_girl);
+
+
+        int bitmapSize = ImageUtils.getBitmapSize(mHdiBitmap);
+
+        mBuilder.append("mipmap-xxxhdpi:" + getMB(bitmapSize));
+        mBuilder.append("\n");
+
+
+        Logger.d("mxxxHdiBitmap:" + bitmapSize);
         Logger.d("xxxhdpi_size:" + size);
-        if (size == ImageUtils.getBitmapSize(mHdiBitmap)) {
+        if (size == bitmapSize) {
             Logger.d("xxxhdpi is ok");
 
         }
@@ -352,16 +397,16 @@ public class MainActivity extends AppCompatActivity {
     private void getBigBitmapFromHdpi() {
         int width = DimensUtils.dipToPx(200);
         int height = DimensUtils.dipToPx(200);
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.bigmap, width, height, Bitmap.Config.ARGB_8888);
+        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.bigmap, width, height, Bitmap.Config.ARGB_8888);
         Logger.d("BigBitmap:" + ImageUtils.getBitmapSize(mHdiBitmap));
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.mipmap.bigmap, DENSITY_XXXHDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.bigmap, DENSITY_XXXHDPI);
         Logger.d("size:" + size);
 
 
         //不压缩，直接读取，OOM
         Bitmap oBitmap = null;
 
-//      oBitmap  = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.mipmap.bigmap);
+//      oBitmap  = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.bigmap);
 
 
         if (oBitmap == null) {
@@ -401,6 +446,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             return null;
         }
+    }
+
+    private String getMB(int size) {
+
+        String result;
+
+        float ss = size * 1.0f / 10248 * 1.0f / 1024 * 1.0f;
+
+        result = String.valueOf(ss) + "MB";
+        return result;
     }
 }
 
