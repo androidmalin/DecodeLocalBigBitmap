@@ -67,6 +67,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     private TextView mTvResult;
+    private TextView mTvResult2;
+
+
+    private Bitmap mMdpiBitmap;
+    private Bitmap mHdpiBitmap;
+    private Bitmap mXhdpiBitmap;
+    private Bitmap mXXhdpiBitmap;
+    private Bitmap mXXXhdpiBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
 
         mTvResult = findViewById(R.id.tv_result);
+        mTvResult2 = findViewById(R.id.tv_result2);
         mImageView = findViewById(R.id.iv_img);
         mProgressBar = findViewById(R.id.pb_loading);
         mProgressBarTwo = findViewById(R.id.pb_loading_two);
@@ -182,13 +191,9 @@ public class MainActivity extends AppCompatActivity {
             getXXXHdpiBitmap();
             getBigBitmapFromHdpi();
 
+            getXHdpiBitmapTest();
+            getXXHdpiBitmapTest();
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mTvResult.setText(mBuilder);
-                }
-            });
 
             Logger.d("bitmap_ARGB_8888 size:" + ImageUtils.getBitmapSize(mBitmap_ARGB_8888));
             Logger.d("bitmap_RGB_565 size:" + ImageUtils.getBitmapSize(mBitmap_RGB_565));
@@ -209,11 +214,15 @@ public class MainActivity extends AppCompatActivity {
                     mRelativeLayoutFour.setBackgroundColor(getResources().getColor(R.color.colorTransparent));
                     mRelativeLayoutFive.setBackgroundColor(getResources().getColor(R.color.colorTransparent));
 
-                    mImageView.setImageBitmap(mBitmap_ARGB_8888);
-                    mImageViewTwo.setImageBitmap(mBitmap_RGB_565);
-                    mImageViewThree.setImageBitmap(mBitmap_ALPHA_8);
-                    mImageViewDpi.setImageBitmap(mHdiBitmap);
-                    loadImageMatrix();
+                    mImageView.setImageBitmap(mMdpiBitmap);
+                    mImageViewTwo.setImageBitmap(mHdpiBitmap);
+                    mImageViewThree.setImageBitmap(mXhdpiBitmap);
+                    mImageViewDpi.setImageBitmap(mXXhdpiBitmap);
+                    mImageViewDpi.setImageBitmap(mXXhdpiBitmap);
+                    mImageViewFive.setImageBitmap(mXXXhdpiBitmap);
+
+                    mTvResult.setText(mBuilder);
+                    mTvResult2.setText(mBuilder2);
                 }
             });
 
@@ -224,30 +233,32 @@ public class MainActivity extends AppCompatActivity {
 
     private StringBuilder mBuilder = new StringBuilder("同一张图片在不同目录下占用的内存" + "\n");
 
+    private StringBuilder mBuilder2 = new StringBuilder("不同目录下占用的内存" + "\n");
+
     /**
-     * mipmap-mdpi
+     * drawable-mdpi
      * <p>
      * density 1
      * densityDpi 160
      */
     private void getMdpiBitmap() {
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.mdpi_girl);
+        mMdpiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.mdpi_wechat);
 
         //nexus 6p
-        // R.mipmap.mdpi_girl
+        // R.mipmap.mdpi_wechat
         // 960*640
         int w_hdpi = (int) (640 * ((560 * 1.0f) / 160) + 0.5f);
         int h_hdpi = (int) (960 * ((560 * 1.0f) / 160) + 0.5f);
         int hdpi_size = w_hdpi * h_hdpi * 4;
         Logger.d("mdpi_size:" + hdpi_size);
 
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.mdpi_girl, DENSITY_MDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.mdpi_wechat, DENSITY_MDPI);
 
-        int bitmapSize = ImageUtils.getBitmapSize(mHdiBitmap);
+        int bitmapSize = ImageUtils.getBitmapSize(mMdpiBitmap);
         Logger.d("mHdiBitmap:" + bitmapSize);
         Logger.d("size:" + size);
 
-        mBuilder.append("mipmap-mdpi:" + getMB(bitmapSize));
+        mBuilder.append("drawable-mdpi:" + getMB(bitmapSize));
         mBuilder.append("\n");
 
 
@@ -257,29 +268,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * mipmap-hdpi
+     * drawable-hdpi
      * <p>
      * density 1.5
      * densityDpi 240
      */
     private void getHdpiBitmap() {
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.hdpi_girl);
+        mHdpiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.hdpi_wechat);
 
         //nexus 6p
-        // R.mipmap.hdpi_girl
+        // R.mipmap.hdpi_wechat
         // 960*640
         int w_hdpi = (int) (640 * ((560 * 1.0f) / 240) + 0.5f);
         int h_hdpi = (int) (960 * ((560 * 1.0f) / 240) + 0.5f);
         int hdpi_size = w_hdpi * h_hdpi * 4;
         Logger.d("hdpi_size:" + hdpi_size);
 
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.hdpi_girl, DENSITY_HDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.hdpi_wechat, DENSITY_HDPI);
 
 
-        int bitmapSize = ImageUtils.getBitmapSize(mHdiBitmap);
+        int bitmapSize = ImageUtils.getBitmapSize(mHdpiBitmap);
         Logger.d("mHdiBitmap:" + bitmapSize);
         Logger.d("size:" + size);
-        mBuilder.append("mipmap-hdpi:" + getMB(bitmapSize));
+        mBuilder.append("drawable-hdpi:" + getMB(bitmapSize));
         mBuilder.append("\n");
 
         if (size == bitmapSize) {
@@ -288,14 +299,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * mipmap-xhdpi 2
+     * drawable-xhdpi 2
      * <p>
      * density 320
      */
     private void getXHdpiBitmap() {
 
         //nexus 6p
-        // R.mipmap.hdpi_girl
+        // R.mipmap.hdpi_wechat
         // 960*640
         int w_xhdpi = (int) (640 * ((560 * 1.0f) / 320) + 0.5f);
         int h_xhdpi = (int) (960 * ((560 * 1.0f) / 320) + 0.5f);
@@ -303,14 +314,14 @@ public class MainActivity extends AppCompatActivity {
         Logger.d("xhdpi_size:" + xhdpi_size);
 
 
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xhdpi_girl, DENSITY_XHDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xhdpi_wechat, DENSITY_XHDPI);
 
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xhdpi_girl);
+        mXhdpiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xhdpi_wechat);
 
 
-        int bitmapSize = ImageUtils.getBitmapSize(mHdiBitmap);
+        int bitmapSize = ImageUtils.getBitmapSize(mXhdpiBitmap);
 
-        mBuilder.append("mipmap-xhdpi:" + getMB(bitmapSize));
+        mBuilder.append("drawable-xhdpi:" + getMB(bitmapSize));
         mBuilder.append("\n");
 
 
@@ -321,15 +332,44 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void getXHdpiBitmapTest() {
+
+        //nexus 6p
+        // R.mipmap.hdpi_wechat
+        // 960*640
+        int w_xhdpi = (int) (640 * ((560 * 1.0f) / 320) + 0.5f);
+        int h_xhdpi = (int) (960 * ((560 * 1.0f) / 320) + 0.5f);
+        int xhdpi_size = w_xhdpi * h_xhdpi * 4;
+        Logger.d("xhdpi_size:" + xhdpi_size);
+
+
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xhdpi_launcher, DENSITY_XHDPI);
+
+        Bitmap mXhdpiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xhdpi_launcher);
+
+
+        int bitmapSize = ImageUtils.getBitmapSize(mXhdpiBitmap);
+
+        mBuilder2.append("drawable-xhdpi:" + getMB(bitmapSize));
+        mBuilder2.append("\n");
+
+
+        Logger.d("mxHdiBitmap:" + bitmapSize);
+        Logger.d("size:" + size);
+        if (size == bitmapSize) {
+            Logger.d("xhdpi is ok");
+        }
+    }
+
     /**
-     * mipmap-xxhdpi 3
+     * drawable-xxhdpi 3
      * <p>
      * density 480
      */
-    private void getXXHdpiBitmap() {
+    private void getXXHdpiBitmapTest() {
 
         //nexus 6p
-        // R.mipmap.hdpi_girl
+        // R.mipmap.hdpi_wechat
         // 960*640
         int w_xxhdpi = (int) (640 * ((560 * 1.0f) / 480) + 0.5f);
         int h_xxhdpi = (int) (960 * ((560 * 1.0f) / 480) + 0.5f);
@@ -339,14 +379,50 @@ public class MainActivity extends AppCompatActivity {
         Logger.d("h_hdpi:" + h_xxhdpi);
         Logger.d("xxhdpi_size:" + xxhdpi_size);
 
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xxhdpi_girl, DENSITY_XXHDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xxdpi_launcher, DENSITY_XXHDPI);
 
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xxhdpi_girl);
+        Bitmap mXXhdpiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xxdpi_launcher);
 
 
-        int bitmapSize = ImageUtils.getBitmapSize(mHdiBitmap);
+        int bitmapSize = ImageUtils.getBitmapSize(mXXhdpiBitmap);
 
-        mBuilder.append("mipmap-xxhdpi:" + getMB(bitmapSize));
+        mBuilder2.append("drawable-xxhdpi:" + getMB(bitmapSize));
+        mBuilder2.append("\n");
+
+        Logger.d("mxxHdiBitmap:" + bitmapSize);
+        Logger.d("size:" + size);
+
+        if (size == bitmapSize) {
+            Logger.d("xxhdpi is ok");
+        }
+    }
+
+    /**
+     * drawable-xxhdpi 3
+     * <p>
+     * density 480
+     */
+    private void getXXHdpiBitmap() {
+
+        //nexus 6p
+        // R.mipmap.hdpi_wechat
+        // 960*640
+        int w_xxhdpi = (int) (640 * ((560 * 1.0f) / 480) + 0.5f);
+        int h_xxhdpi = (int) (960 * ((560 * 1.0f) / 480) + 0.5f);
+        int xxhdpi_size = w_xxhdpi * h_xxhdpi * 4;
+
+        Logger.d("w_hdpi:" + w_xxhdpi);
+        Logger.d("h_hdpi:" + h_xxhdpi);
+        Logger.d("xxhdpi_size:" + xxhdpi_size);
+
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xxhdpi_wechat, DENSITY_XXHDPI);
+
+        mXXhdpiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xxhdpi_wechat);
+
+
+        int bitmapSize = ImageUtils.getBitmapSize(mXXhdpiBitmap);
+
+        mBuilder.append("drawable-xxhdpi:" + getMB(bitmapSize));
         mBuilder.append("\n");
 
         Logger.d("mxxHdiBitmap:" + bitmapSize);
@@ -358,14 +434,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * mipmap-xxxhdpi 4
+     * drawable-xxxhdpi 4
      * <p>
      * density 640
      */
     private void getXXXHdpiBitmap() {
 
         //nexus 6p
-        // R.mipmap.hdpi_girl
+        // R.mipmap.hdpi_wechat
         // 960*640
         int w_xxxhdpi = (int) (640 * ((560 * 1.0f) / 640) + 0.5f);
         int h_xxxhdpi = (int) (960 * ((560 * 1.0f) / 640) + 0.5f);
@@ -375,14 +451,14 @@ public class MainActivity extends AppCompatActivity {
         Logger.d("h_xxxhdpi_" + h_xxxhdpi);
         Logger.d("xxxhdpi_size:" + xxxhdpi_size);
 
-        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xxxhdpi_girl, DENSITY_XXXHDPI);
+        int size = ImageUtils.getDrawableBitmapSize(getApplicationContext(), R.drawable.xxxhdpi_wechat, DENSITY_XXXHDPI);
 
-        mHdiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xxxhdpi_girl);
+        mXXXhdpiBitmap = ImageUtils.getInstance().getLocalBitmapFromResFolder(getApplicationContext(), R.drawable.xxxhdpi_wechat);
 
 
-        int bitmapSize = ImageUtils.getBitmapSize(mHdiBitmap);
+        int bitmapSize = ImageUtils.getBitmapSize(mXXXhdpiBitmap);
 
-        mBuilder.append("mipmap-xxxhdpi:" + getMB(bitmapSize));
+        mBuilder.append("drawable-xxxhdpi:" + getMB(bitmapSize));
         mBuilder.append("\n");
 
 
@@ -393,6 +469,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
 
     private void getBigBitmapFromHdpi() {
         int width = DimensUtils.dipToPx(200);
